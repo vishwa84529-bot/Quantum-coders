@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: disaster-ai-backend
+    ports:
+      - "8000:8000"
+    environment:
+      # Add backend environment variables here if needed
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        # Pass build-time variables if needed, though mostly Vite relies on .env files 
+        # which are copied into the container during build.
+        - VITE_API_BASE_URL=/api
+    container_name: disaster-ai-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
